@@ -26,7 +26,6 @@ class Arma: # (De brinquedo rs)
         else:
             print("As balas acabaram!")
 
-
     def recarregar(self):
         if len(self.municao) - 1 >= 0:
             self.municao.pop()
@@ -40,7 +39,6 @@ class Arma: # (De brinquedo rs)
 
     def checarBalas(self):
         return self.checarMunicao() and self.municao[len(self.municao) - 1] > 0
-        
 
 arsenal = [
     ("Nerf Pistola", "Amarela", 10, 6),
