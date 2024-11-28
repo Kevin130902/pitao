@@ -4,16 +4,16 @@
 from datetime import datetime
 import time
 
-cmds = ["add", "remove", "cart", "clear", "calc", "wallet", "buy"]
+cmds = ["add", "remove", "cart", "clear", "calc", "wallet", "buy", "exit"]
 
 products = {
-    "furadeira": 55.00,
-    "chapéu": 45.03,
-    "coca lata": 5.30,
-    "cigarro": 3.00,
-    "leite": 8.50,
-    "arroz": 40.99,
-    "carne": 30.99,
+    "drill": 55.00,
+    "hat": 45.03,
+    "cola": 5.30,
+    "milk": 8.50,
+    "rice": 40.99,
+    "meat": 30.99,
+    "fish": 22.00,
 }
 
 class Product:
@@ -28,7 +28,7 @@ def formatCurrency(n: float):
     return f"R${n:1.2f}"
 
 def formatItemAmountMessage(amount: int):
-    return f"vez{'es' if amount != 1 else ''}"
+    return f"time{'s' if amount != 1 else ''}"
 
 def getTotalPrice() -> float:
     total = 0
@@ -59,15 +59,15 @@ firstTime = False
 while True:
     if not firstTime:
         print("==============================================")
-        print("Seja bem-vindo a loja virtual do python\n")
-        cmdNames = "Comandos: "
-        ps = "Produtos Disponíveis:"
+        print("Welcome to my virtual store\n")
+        cmdNames = "Commands: "
+        ps = "Available Products:"
 
         for cmd in cmds:
             cmdNames += cmd + " "
 
         for pName, price in products.items():
-            ps += f"\n- Nome: {pName.capitalize()}\n  Preço: {formatCurrency(price)}"
+            ps += f"\n- Name: {pName.capitalize()}\n  Price: {formatCurrency(price)}"
 
         print(cmdNames + "\n" + ps)
         print("==============================================")
@@ -76,38 +76,42 @@ while True:
 
     #
 
-    op = input("\nSelecione um comando válido\n~ ")
+    op = input("\nSelect a valid command\n~ ")
 
     match op:
         case "add":
-            itemName = input("\nDigite o nome do produto: ").lower()
+            itemName = input("\nProvide a product name: ").lower()
 
             if not itemName in products:
-                raise ValueError("O produto selecionado não existe.")
+                print("The chosen product doesn't exist.")
+                continue
 
-            itemAmount = int(input("Digite a quantidade que deseja adicionar: "))
+            itemAmount = int(input("Provide the amount of items you wish to add: "))
 
             if itemAmount < 0:
-                raise ValueError("Quantidade inválida.")
+                print("Invalid amount.")
+                continue
                 
             if itemName in products:
                 for _ in range(itemAmount):
                     cart.append(Product(itemName, products[itemName]))
 
-                print(f"Produto '{itemName}' foi adicionado {itemAmount} {formatItemAmountMessage(itemAmount)} ao carrinho.")
+                print(f"The product '{itemName}' was added {itemAmount} {formatItemAmountMessage(itemAmount)} to the cart.")
             else:
-                print(f"O produto '{itemName}' não foi encontrado. Digite um nome de produto válido")
+                print(f"The product '{itemName}' was not found. Please provide a valid product name.")
 
         case "remove":
-            itemName = input("\nDigite o nome do produto que deseja remover: ").lower()
+            itemName = input("\nProvide a product name: ").lower()
 
             if not itemName in products:
-                raise ValueError("O produto selecionado não existe.")
+                print("The chosen product doesn't exist.")
+                continue
 
-            itemAmount = int(input("Digite a quantidade que deseja remover: "))
+            itemAmount = int(input("Provide the amount of items you wish to remove: "))
 
             if itemAmount < 0:
-                raise ValueError("Quantidade inválida.")
+                print("Invalid amount.")
+                continue
 
             deletedItems = 0
             i = 0
@@ -123,32 +127,32 @@ while True:
                     break
 
             if deletedItems >= 0:
-                print(f"O produto '{itemName}' foi removido {deletedItems} {formatItemAmountMessage(deletedItems)} do carrinho.")
+                print(f"The product '{itemName}' was removed {deletedItems} {formatItemAmountMessage(deletedItems)} from the cart.")
             else:
-                print(f"O produto '{itemName}' não foi encontrado no carrinho.")
+                print(f"The product '{itemName}' was not found in the cart.")
         case "cart":
             if len(cart) > 0:
                 for itemName, amount in getItemCount():
                     print(f"- {itemName.capitalize()} (x{amount})\n  {formatCurrency(products[itemName] * amount)}")
             else:
-                print("O carrinho está vazio.")
+                print("The cart is currently empty.")
 
         case "clear":
             cart.clear()
 
-            print("O carrinho foi limpo com sucesso.")
+            print("The cart was successfuly cleared.")
         case "calc":
-            print(f"O preço total da compra é {formatCurrency(getTotalPrice())}")
+            print(f"The total price of the purchase is {formatCurrency(getTotalPrice())}")
         case "wallet":
-            print(f"Seu saldo atual é de {formatCurrency(money)}")
+            print(f"Your current credit amount is {formatCurrency(money)}")
         case "buy":
             if len(cart) == 0:
-                print("O carrinho está vazio.")
+                print("The cart is currently empty.")
                 continue
 
             total = getTotalPrice()
             if money >= total:
-                s = f"===============NOTA FISCAL===============\n{datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n\nPRODUTOS:\n"
+                s = f"=================NOTE====================\n{datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n\nPRODUCTS:\n"
 
                 for itemName, amount in getItemCount():
                     s += f"{itemName.upper()} x{amount} - {formatCurrency(products[itemName] * amount)}\n"
@@ -160,10 +164,10 @@ while True:
                 cart.clear()
                 money -= total
 
-                print(f"Compra efetuada com sucesso! seu saldo atual é de {formatCurrency(money)}")
+                print(f"The purchase was successfuly finished! your current credit amount is {formatCurrency(money)}")
             else:
-                print("Saldo insuficiente.")
+                print("Insufficient credits.")
         case "exit":
             break
         case _:
-            print("Operação inválida.")
+            print("Invalid command.")
