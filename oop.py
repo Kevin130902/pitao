@@ -10,13 +10,17 @@ class Arma: # (De brinquedo rs)
 
         print(f"Foi criada uma {nome} de cor {cor}.")
 
+    # bem legal
+    def __som_de_tiro(self):
+        print("Pew! ", end=" ")
+
     def atirar(self):
         municao = self.__municao
         tamanho = len(municao)
 
         if tamanho > 0 and municao[tamanho - 1] > 0:
             municao[tamanho - 1] -= 1
-            print("Pew! ", end=" ")
+            self.__som_de_tiro()
         else:
             print("As balas acabaram!")
 
